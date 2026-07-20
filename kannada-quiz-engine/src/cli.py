@@ -60,11 +60,15 @@ def generate(episode: Path, config: Path = Path("config/config.yaml")) -> None:
     # 2. Narration
     console.print(f"[cyan]2/4[/cyan] Generating narration ({cfg.tts.provider})…")
     tts = get_tts(cfg)
-    tts.synth(ep.intro_narration_kn, audio_dir / "intro")
+    if ep.intro_narration_kn and ep.intro_narration_kn.strip():
+        tts.synth(ep.intro_narration_kn, audio_dir / "intro")
     for q in ep.questions:
-        tts.synth(q.narration_kn, audio_dir / f"q{q.id}_question")
-        tts.synth(q.reveal_narration_kn, audio_dir / f"q{q.id}_reveal")
-    tts.synth(ep.outro_narration_kn, audio_dir / "outro")
+        if q.narration_kn and q.narration_kn.strip():
+            tts.synth(q.narration_kn, audio_dir / f"q{q.id}_question")
+        if q.reveal_narration_kn and q.reveal_narration_kn.strip():
+            tts.synth(q.reveal_narration_kn, audio_dir / f"q{q.id}_reveal")
+    if ep.outro_narration_kn and ep.outro_narration_kn.strip():
+        tts.synth(ep.outro_narration_kn, audio_dir / "outro")
 
     # 3. Video
     console.print("[cyan]3/4[/cyan] Rendering video (MoviePy + FFmpeg)…")

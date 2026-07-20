@@ -35,9 +35,15 @@ class EspeakKannadaTTS(TTSProvider):
             check=True, capture_output=True,
         )
         if t.espeak_soften:
+            ffmpeg_exe = "ffmpeg"
+            try:
+                import imageio_ffmpeg
+                ffmpeg_exe = imageio_ffmpeg.get_ffmpeg_exe()
+            except Exception:
+                pass
             # Soften metallic highs, remove rumble, gentle level smoothing.
             subprocess.run(
-                ["ffmpeg", "-y", "-i", str(raw), "-af",
+                [ffmpeg_exe, "-y", "-i", str(raw), "-af",
                  "highpass=f=90,lowpass=f=4600,"
                  "acompressor=threshold=-18dB:ratio=2.5:attack=8:release=120,"
                  "volume=1.15",

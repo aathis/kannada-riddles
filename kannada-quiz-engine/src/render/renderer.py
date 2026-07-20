@@ -8,17 +8,24 @@ from __future__ import annotations
 import subprocess
 from pathlib import Path
 
-from moviepy import AudioFileClip, ImageClip, concatenate_videoclips
+from moviepy import AudioFileClip, CompositeAudioClip, ImageClip, concatenate_audioclips, concatenate_videoclips
 
-from ..config_loader import Settings
-from ..models import Episode
+MUSIC_DIR = Path(__file__).resolve().parent.parent.parent / "music"
+
+
+def _get_ffmpeg_exe() -> str:
+    try:
+        import imageio_ffmpeg
+        return imageio_ffmpeg.get_ffmpeg_exe()
+    except Exception:
+        return "ffmpeg"
 
 
 def _tick(path: Path) -> Path:
     """Generate a short countdown tick sound once, via FFmpeg sine."""
     if not path.exists():
         subprocess.run(
-            ["ffmpeg", "-y", "-f", "lavfi", "-i",
+            [_get_ffmpeg_exe(), "-y", "-f", "lavfi", "-i",
              "sine=frequency=1050:duration=0.12", "-af", "volume=0.35", str(path)],
             check=True, capture_output=True,
         )
@@ -58,6 +65,22 @@ def render_episode(ep: Episode, cfg: Settings, gen_dir: Path, out_file: Path) ->
     clips.append(_segment(img_dir / "outro.png", audio_dir / "outro.wav", t.outro))
 
     final = concatenate_videoclips(clips, method="chain")
+
+    # Overlay background music if selected
+    bg_music_name = getattr(ep, "bg_music", "soft_piano_gymnopedie") or "soft_piano_gymnopedie"
+    if bg_music_name != "none":
+        bg_track = MUSIC_DIR / f"{bg_music_name}.wav"
+        if bg_track.exists():
+            bg_clip = AudioFileClip(str(bg_track))
+            repeats = int(final.duration // bg_clip.duration) + 1
+            full_bg = (concatenate_audioclips([bg_clip] * repeats)
+                       .subclipped(0, final.duration)
+                       .with_volume_scaled(0.07))
+            if final.audio is not None:
+                final = final.with_audio(CompositeAudioClip([final.audio, full_bg]))
+            else:
+                final = final.with_audio(full_bg)
+
     out_file.parent.mkdir(parents=True, exist_ok=True)
     final.write_videofile(
         str(out_file), fps=cfg.video.fps, codec="libx264",

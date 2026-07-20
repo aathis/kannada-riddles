@@ -30,12 +30,12 @@ fonts:
   emoji: /usr/share/fonts/truetype/noto/NotoColorEmoji.ttf
 
 branding:
-  channel_name_kn: "ಕನ್ನಡ ಒಗಟು ಲೋಕ"
-  channel_name_en: "Kannada Riddle World"
+  channel_name_kn: "Riddle World"
+  channel_name_en: "Riddle World"
 
 tts:
-  provider: espeak     # espeak (offline) | edge (natural voice, blocked by this environment's network policy)
-  edge_voice: kn-IN-SapnaNeural
+  provider: edge     # espeak (offline) | edge (natural voice, blocked by this environment's network policy)
+  edge_voice: en-US-AvaNeural
   espeak_speed: 122        # slower = clearer, less rushed
   espeak_amplitude: 170
   espeak_pitch: 42         # lower pitch = less shrill

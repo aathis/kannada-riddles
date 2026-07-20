@@ -3,21 +3,21 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Kannada Quiz Engine</title>
+<title>Word Riddle Kingdom — Quiz Video Generator</title>
 <style>
   :root { --bg:#1A1A40; --bg2:#2D2D6E; --accent:#FFC93C; --text:#fff; --sub:#C9C9E8; }
   * { box-sizing:border-box; }
   body { margin:0; font-family:system-ui,sans-serif; color:var(--text);
          background:linear-gradient(180deg,var(--bg),var(--bg2)); min-height:100vh; }
-  .wrap { max-width:860px; margin:0 auto; padding:2rem 1rem 4rem; }
+  .wrap { max-width:900px; margin:0 auto; padding:2rem 1rem 4rem; }
   h1 { color:var(--accent); margin:0 0 .25rem; }
-  .sub { color:var(--sub); margin:0 0 2rem; }
+  .sub { color:var(--sub); margin:0 0 1.5rem; }
   fieldset { border:1px solid #4a4a8a; border-radius:10px; margin:0 0 1.5rem; padding:1rem 1.25rem; }
   legend { color:var(--accent); font-weight:600; padding:0 .5rem; }
   label { display:block; margin:.75rem 0 .25rem; color:var(--sub); font-size:.9rem; }
   input, textarea { width:100%; padding:.55rem .7rem; border-radius:8px; border:1px solid #4a4a8a;
                     background:#12122e; color:var(--text); font-size:1rem; }
-  textarea { min-height:3.2rem; resize:vertical; }
+  textarea { min-height:3.5rem; resize:vertical; }
   .q { border:1px dashed #5a5aa0; border-radius:10px; padding: .75rem 1rem 1rem; margin-bottom:1rem; position:relative; }
   .q h3 { margin:.25rem 0 0; color:var(--accent); font-size:1rem; }
   .q .del { position:absolute; top:.6rem; right:.75rem; background:none; border:none;
@@ -25,41 +25,61 @@
   .row { display:grid; grid-template-columns:1fr 1fr; gap:1rem; }
   @media (max-width:640px){ .row{grid-template-columns:1fr;} }
   button { cursor:pointer; border:none; border-radius:8px; font-size:1rem; padding:.7rem 1.4rem; }
-  .add { background:#3d3d80; color:var(--text); margin-bottom:1.5rem; }
-  .go  { background:var(--accent); color:#1A1A40; font-weight:700; }
+  .add { background:#3d3d80; color:var(--text); margin-bottom:1rem; }
+  .btn-secondary { background:#4a4a8a; color:var(--text); margin-right:.5rem; font-size:.9rem; padding:.5rem 1rem; }
+  .btn-accent { background:var(--accent); color:#1A1A40; font-weight:700; }
+  .go { background:var(--accent); color:#1A1A40; font-weight:700; width:100%; font-size:1.1rem; padding:1rem; }
   .go:disabled { opacity:.5; cursor:wait; }
   #log { background:#0d0d24; border-radius:8px; padding:1rem; font-family:monospace;
          font-size:.85rem; white-space:pre-wrap; display:none; margin-top:1.5rem; color:var(--sub); }
   #result { display:none; margin-top:1.5rem; }
   #result a { color:var(--accent); font-weight:600; }
   #result video { width:100%; border-radius:10px; margin-top:.75rem; }
-  .err { color:#FF5D5D; margin-top:1rem; }
+  .err { color:#FF5D5D; margin-top:1rem; font-weight:600; }
+  .prompt-box { background:#12122e; border:1px solid #5a5aa0; border-radius:8px; padding:1rem; margin-bottom:1rem; font-size:.85rem; color:var(--sub); }
+  .prompt-text { font-family:monospace; background:#0a0a1a; padding:.75rem; border-radius:6px; white-space:pre-wrap; max-height:160px; overflow-y:auto; margin-top:.5rem; color:#AEE; }
+  .toast { color:#4E8; font-size:.85rem; display:inline-block; margin-left:.5rem; }
 </style>
 </head>
 <body>
 <div class="wrap">
-  <h1>ಕನ್ನಡ ಒಗಟು ಲೋಕ — Episode Builder</h1>
-  <p class="sub">Fill in the details, click Generate, and download a YouTube-ready quiz video.</p>
+  <h1>Word Riddle Kingdom — Quiz Video Generator</h1>
+  <p class="sub">Create complete YouTube-ready Rebus word quiz videos (English Edition).</p>
 
+  <!-- AI Prompt Generator Section -->
+  <!-- Episode Settings & Question Editor -->
   <fieldset>
-    <legend>Episode</legend>
-    <div class="row">
-      <div><label>Title (Kannada)</label><input id="title_kn" value="ಚಿತ್ರ ನೋಡಿ ಪದ ಹೇಳಿ!"></div>
-      <div><label>Title (English)</label><input id="title_en" value="Guess the Kannada Word!"></div>
+    <legend>📝 Episode Details & Questions Editor</legend>
+    <div style="margin-bottom:1rem;">
+      <label style="font-size:1rem; font-weight:600; color:var(--text); margin-bottom:.4rem;">Episode Title</label>
+      <input id="title_en" value="Guess the Word! - Episode 1" style="font-size:1.05rem;">
     </div>
-    <label>Intro narration (Kannada)</label>
-    <textarea id="intro_kn">ನಮಸ್ಕಾರ! ಕನ್ನಡ ಚಿತ್ರ ಒಗಟು ಆಟಕ್ಕೆ ಸ್ವಾಗತ. ಚಿತ್ರಗಳನ್ನು ಸೇರಿಸಿ ಪದವನ್ನು ಊಹಿಸಿ!</textarea>
-    <label>Outro narration (Kannada)</label>
-    <textarea id="outro_kn">ನೀವು ಎಷ್ಟು ಸರಿ ಉತ್ತರ ಹೇಳಿದಿರಿ? ಕಾಮೆಂಟ್ ಮಾಡಿ. ಲೈಕ್ ಮತ್ತು ಸಬ್ಸ್ಕ್ರೈಬ್ ಮಾಡಲು ಮರೆಯಬೇಡಿ!</textarea>
-  </fieldset>
 
-  <fieldset>
-    <legend>Questions</legend>
+    <!-- Background Music Selector -->
+    <div style="margin-top:1rem; background:#12122e; padding:1rem; border-radius:8px; border:1px solid #4a4a8a;">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:.5rem;">
+        <label style="font-weight:600; color:var(--accent); font-size:1rem; margin:0;">🎵 Background Music (Saved Library)</label>
+        <label for="music_file_input" class="btn-secondary" style="cursor:pointer; margin:0; padding:.35rem .8rem; font-size:.85rem; display:inline-block;">📁 Upload Custom Track (.mp3 / .wav)</label>
+        <input type="file" id="music_file_input" accept="audio/*" style="display:none" onchange="uploadCustomMusic(this)">
+      </div>
+      <div class="row" style="align-items:center;">
+        <div>
+          <select id="bg_music" onchange="previewMusic()" style="width:100%; padding:.6rem .8rem; border-radius:8px; border:1px solid #4a4a8a; background:#0d0d24; color:var(--text); font-size:1rem;">
+          </select>
+        </div>
+        <div>
+          <audio id="music_player" controls style="width:100%; height:40px; border-radius:6px;"></audio>
+        </div>
+      </div>
+      <span id="upload_status" style="font-size:.85rem; color:#4E8; display:block; margin-top:.4rem;"></span>
+    </div>
+
+    <h3 style="color:var(--accent); margin-top:1.5rem; margin-bottom:.5rem;">Questions (<span id="q_count_total">0</span>)</h3>
     <div id="questions"></div>
-    <button type="button" class="add" onclick="addQuestion()">+ Add question</button>
+    <button type="button" class="add" onclick="addQuestion()">+ Add single question</button>
   </fieldset>
 
-  <button type="button" class="go" id="go" onclick="generate()">Generate video</button>
+  <button type="button" class="go" id="go" onclick="generate()">🚀 Generate Full Video & Thumbnail</button>
   <div class="err" id="err"></div>
   <div id="log"></div>
   <div id="result">
@@ -77,53 +97,125 @@ function addQuestion(data = {}) {
   qCount++;
   const div = document.createElement("div");
   div.className = "q";
+  const clueStr = Array.isArray(data.clue_emojis) ? data.clue_emojis.join(" + ") : (data.clue_emojis || data.clue || "");
+  const ansStr = data.answer_en || data.answer_kn || data.aen || data.akn || "";
+  const promptStr = data.prompt_text || "CAN YOU GUESS THE WORD?";
+
   div.innerHTML = `
     <button type="button" class="del" onclick="this.parentNode.remove(); renumber()">✕ remove</button>
     <h3>Question <span class="qnum">${qCount}</span></h3>
     <div class="row">
-      <div><label>Clue emojis (space-separated)</label><input class="clue" value="${data.clue || ''}" placeholder="☀️ 🌸"></div>
-      <div><label>Answer (Kannada)</label><input class="akn" value="${data.akn || ''}" placeholder="ಸೂರ್ಯಕಾಂತಿ"></div>
+      <div><label>Clue Tokens (e.g. Geo+📊+y or B+🍃 or ☀️ 🌸)</label><input class="clue" value="${clueStr}" placeholder="Geo+📊+y"></div>
+      <div><label>Answer (English Word)</label><input class="aen" value="${ansStr}" placeholder="Geography"></div>
     </div>
-    <div class="row">
-      <div><label>Answer (English)</label><input class="aen" value="${data.aen || ''}" placeholder="Sunflower"></div>
-      <div><label>Question narration (Kannada)</label><input class="nkn" value="${data.nkn || ''}" placeholder="ಪ್ರಶ್ನೆ ಒಂದು. ಈ ಚಿತ್ರಗಳನ್ನು ಸೇರಿಸಿದರೆ ಯಾವ ಪದ?"></div>
-    </div>
-    <label>Reveal narration (Kannada)</label>
-    <input class="rkn" value="${data.rkn || ''}" placeholder="ಉತ್ತರ: ಸೂರ್ಯಕಾಂತಿ!">`;
+    <div style="margin-top:.4rem;">
+      <label>Question Subtext Prompt (Bottom text on video card)</label><input class="prompt_text" value="${promptStr}" placeholder="CAN YOU GUESS THE WORD?">
+    </div>`;
   document.getElementById("questions").appendChild(div);
+  renumber();
 }
 
 function renumber() {
   document.querySelectorAll("#questions .qnum").forEach((el, i) => el.textContent = i + 1);
-  qCount = document.querySelectorAll("#questions .q").length;
+  const total = document.querySelectorAll("#questions .q").length;
+  document.getElementById("q_count_total").textContent = total;
 }
 
-addQuestion({clue:"☀️ 🌸", akn:"ಸೂರ್ಯಕಾಂತಿ", aen:"Sunflower",
-             nkn:"ಪ್ರಶ್ನೆ ಒಂದು. ಈ ಎರಡು ಚಿತ್ರಗಳನ್ನು ಸೇರಿಸಿದರೆ ಯಾವ ಪದ?",
-             rkn:"ಉತ್ತರ: ಸೂರ್ಯಕಾಂತಿ!"});
+function previewMusic() {
+  const val = document.getElementById("bg_music").value;
+  const player = document.getElementById("music_player");
+  if (!val || val === "none") {
+    player.style.display = "none";
+  } else {
+    player.style.display = "block";
+    player.src = `/music/${val}.wav`;
+  }
+}
+
+async function loadMusicList(selectedVal = null) {
+  try {
+    const res = await fetch("/music-list");
+    const data = await res.json();
+    const sel = document.getElementById("bg_music");
+    const current = selectedVal || sel.value;
+    sel.innerHTML = "";
+    (data.tracks || []).forEach((t, i) => {
+      const opt = document.createElement("option");
+      opt.value = t.value;
+      opt.textContent = t.label;
+      if (t.value === current || (!current && i === 0)) opt.selected = true;
+      sel.appendChild(opt);
+    });
+    previewMusic();
+  } catch (e) {
+    console.error("Failed to load music list:", e);
+  }
+}
+loadMusicList();
+
+async function uploadCustomMusic(input) {
+  if (!input.files || !input.files[0]) return;
+  const file = input.files[0];
+  const status = document.getElementById("upload_status");
+  status.style.color = "#4E8";
+  status.textContent = "Uploading & processing audio...";
+  const fd = new FormData();
+  fd.append("file", file);
+  try {
+    const res = await fetch("/upload-music", {method:"POST", body: fd});
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || "Upload failed");
+    await loadMusicList(data.value);
+    status.textContent = "✓ Added custom audio track to library!";
+    setTimeout(() => status.textContent = "", 4000);
+  } catch (e) {
+    status.style.color = "#FF5D5D";
+    status.textContent = "Error: " + e.message;
+  }
+}
+
+// Default initial question
+addQuestion({
+  clue_emojis: "Geo+📊+y",
+  answer_en: "Geography",
+  prompt_text: "CAN YOU GUESS THE WORD?"
+});
 
 async function generate() {
   const err = document.getElementById("err");
   err.textContent = "";
+
   const questions = [...document.querySelectorAll("#questions .q")].map(q => ({
     clue_emojis: q.querySelector(".clue").value,
-    answer_kn:   q.querySelector(".akn").value,
     answer_en:   q.querySelector(".aen").value,
-    narration_kn: q.querySelector(".nkn").value,
-    reveal_narration_kn: q.querySelector(".rkn").value,
+    answer_kn:   q.querySelector(".aen").value,
+    prompt_text: q.querySelector(".prompt_text").value,
+    narration_kn: "",
+    reveal_narration_kn: "",
   }));
+
+  if (questions.length === 0) {
+    err.textContent = "Please add at least one question.";
+    return;
+  }
+
+  const titleVal = (document.getElementById("title_en")?.value || "Guess the Word!").trim();
+  const introVal = document.getElementById("intro_kn")?.value || "";
+  const outroVal = document.getElementById("outro_kn")?.value || "";
+
   const body = {
-    title_kn: document.getElementById("title_kn").value,
-    title_en: document.getElementById("title_en").value,
-    intro_narration_kn: document.getElementById("intro_kn").value,
-    outro_narration_kn: document.getElementById("outro_kn").value,
+    title_en: titleVal,
+    title_kn: titleVal,
+    intro_narration_kn: introVal,
+    outro_narration_kn: outroVal,
+    bg_music: document.getElementById("bg_music")?.value || "soft_piano_gymnopedie",
     questions,
   };
   const go = document.getElementById("go");
-  go.disabled = true; go.textContent = "Rendering…";
+  go.disabled = true; go.textContent = "Rendering " + questions.length + " questions video…";
   document.getElementById("result").style.display = "none";
   const log = document.getElementById("log");
-  log.style.display = "block"; log.textContent = "Starting…";
+  log.style.display = "block"; log.textContent = "Starting render…";
 
   try {
     const res = await fetch("/generate", {method:"POST",
@@ -134,7 +226,7 @@ async function generate() {
   } catch (e) {
     err.textContent = e.message;
   } finally {
-    go.disabled = false; go.textContent = "Generate video";
+    go.disabled = false; go.textContent = "🚀 Generate Full Video & Thumbnail";
   }
 }
 

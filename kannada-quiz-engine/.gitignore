@@ -1,1 +1,8 @@
 fonts/
+venv/
+generated/
+output/
+__pycache__/
+*.pyc
+episodes/*.json
+!episodes/episode_001.json

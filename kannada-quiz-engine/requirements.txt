@@ -6,3 +6,6 @@ rich>=13.0
 pyyaml>=6.0
 edge-tts>=6.1  # natural Kannada voice (needs internet)
 flask>=3.0     # web UI (webapp/app.py)
+uharfbuzz>=0.35.0  # HarfBuzz text shaping for complex scripts (Kannada)
+freetype-py>=2.3.0 # FreeType glyph rendering
+
