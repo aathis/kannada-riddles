@@ -40,7 +40,7 @@ tts:
 python webapp/app.py
 ```
 
-Open http://localhost:5000 — fill in the episode form (titles, narrations,
+Open http://localhost:5001 — fill in the episode form (titles, narrations,
 add/remove questions), click **Generate video**, watch progress, then preview
 and download the MP4 + thumbnail from the page. Episode JSON files are saved
 to `episodes/` automatically.

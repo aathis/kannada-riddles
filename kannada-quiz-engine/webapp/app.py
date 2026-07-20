@@ -5,7 +5,7 @@ Run from the kannada-quiz-engine directory:
     pip install flask
     python webapp/app.py
 
-Then open http://localhost:5000 — fill in the episode form, click Generate,
+Then open http://localhost:5001 — fill in the episode form, click Generate,
 watch progress, and download the finished MP4 + thumbnail.
 """
 from __future__ import annotations
@@ -131,4 +131,6 @@ def output_file(filename: str):
 
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000, debug=False)
+    # 5001 by default: macOS AirPlay Receiver occupies 5000.
+    import os
+    app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5001)), debug=False)
