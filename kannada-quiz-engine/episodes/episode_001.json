@@ -1,0 +1,49 @@
+{
+  "id": "episode_001",
+  "title_kn": "ಚಿತ್ರ ನೋಡಿ ಪದ ಹೇಳಿ!",
+  "title_en": "Guess the Kannada Word!",
+  "intro_narration_kn": "ನಮಸ್ಕಾರ! ಕನ್ನಡ ಚಿತ್ರ ಒಗಟು ಆಟಕ್ಕೆ ಸ್ವಾಗತ. ಚಿತ್ರಗಳನ್ನು ಸೇರಿಸಿ ಪದವನ್ನು ಊಹಿಸಿ!",
+  "outro_narration_kn": "ನೀವು ಎಷ್ಟು ಸರಿ ಉತ್ತರ ಹೇಳಿದಿರಿ? ಕಾಮೆಂಟ್ ಮಾಡಿ. ಲೈಕ್ ಮತ್ತು ಸಬ್ಸ್ಕ್ರೈಬ್ ಮಾಡಲು ಮರೆಯಬೇಡಿ!",
+  "questions": [
+    {
+      "id": 1,
+      "clue_emojis": ["☀️", "🌸"],
+      "answer_kn": "ಸೂರ್ಯಕಾಂತಿ",
+      "answer_en": "Sunflower",
+      "narration_kn": "ಪ್ರಶ್ನೆ ಒಂದು. ಈ ಎರಡು ಚಿತ್ರಗಳನ್ನು ಸೇರಿಸಿದರೆ ಯಾವ ಪದ?",
+      "reveal_narration_kn": "ಉತ್ತರ: ಸೂರ್ಯಕಾಂತಿ!"
+    },
+    {
+      "id": 2,
+      "clue_emojis": ["👁️", "💧"],
+      "answer_kn": "ಕಣ್ಣೀರು",
+      "answer_en": "Tears",
+      "narration_kn": "ಪ್ರಶ್ನೆ ಎರಡು. ಕಣ್ಣು ಮತ್ತು ನೀರು ಸೇರಿದರೆ ಏನಾಗುತ್ತದೆ?",
+      "reveal_narration_kn": "ಉತ್ತರ: ಕಣ್ಣೀರು!"
+    },
+    {
+      "id": 3,
+      "clue_emojis": ["🌧️", "🏹"],
+      "answer_kn": "ಮಳೆಬಿಲ್ಲು",
+      "answer_en": "Rainbow",
+      "narration_kn": "ಪ್ರಶ್ನೆ ಮೂರು. ಮಳೆ ಮತ್ತು ಬಿಲ್ಲು ಸೇರಿದರೆ ಯಾವ ಪದ?",
+      "reveal_narration_kn": "ಉತ್ತರ: ಮಳೆಬಿಲ್ಲು!"
+    },
+    {
+      "id": 4,
+      "clue_emojis": ["⭐", "🐟"],
+      "answer_kn": "ನಕ್ಷತ್ರ ಮೀನು",
+      "answer_en": "Starfish",
+      "narration_kn": "ಪ್ರಶ್ನೆ ನಾಲ್ಕು. ನಕ್ಷತ್ರ ಮತ್ತು ಮೀನು ಸೇರಿದರೆ ಯಾವ ಜೀವಿ?",
+      "reveal_narration_kn": "ಉತ್ತರ: ನಕ್ಷತ್ರ ಮೀನು!"
+    },
+    {
+      "id": 5,
+      "clue_emojis": ["🐝", "🏠"],
+      "answer_kn": "ಜೇನುಗೂಡು",
+      "answer_en": "Beehive",
+      "narration_kn": "ಪ್ರಶ್ನೆ ಐದು. ಜೇನುಹುಳು ಮತ್ತು ಮನೆ ಸೇರಿದರೆ ಯಾವ ಪದ?",
+      "reveal_narration_kn": "ಉತ್ತರ: ಜೇನುಗೂಡು!"
+    }
+  ]
+}

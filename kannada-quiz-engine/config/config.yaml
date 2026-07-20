@@ -1,0 +1,47 @@
+# Kannada Quiz Engine configuration (design doc §15)
+# Configuration over code: change look/feel/timing here, never in code.
+
+video:
+  width: 1920          # 16:9 YouTube long-form
+  height: 1080
+  fps: 30
+
+timing:                # seconds
+  intro: 5
+  clue: 4              # clue shown + question narration
+  countdown: 5         # one frame per second
+  reveal: 3
+  outro: 5
+
+colors:
+  bg_top: "#1A1A40"
+  bg_bottom: "#2D2D6E"
+  reveal_top: "#0F3D2E"
+  reveal_bottom: "#1E6B4F"
+  accent: "#FFC93C"
+  text: "#FFFFFF"
+  subtext: "#C9C9E8"
+  timer_ring: "#FF5D5D"
+
+fonts:
+  kannada_regular: /usr/share/fonts/truetype/noto/NotoSansKannada-Regular.ttf
+  kannada_bold: /usr/share/fonts/truetype/noto/NotoSansKannada-Bold.ttf
+  latin_bold: /usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf
+  emoji: /usr/share/fonts/truetype/noto/NotoColorEmoji.ttf
+
+branding:
+  channel_name_kn: "ಕನ್ನಡ ಒಗಟು ಲೋಕ"
+  channel_name_en: "Kannada Riddle World"
+
+tts:
+  provider: espeak     # espeak (offline) | edge (natural voice, blocked by this environment's network policy)
+  edge_voice: kn-IN-SapnaNeural
+  espeak_speed: 122        # slower = clearer, less rushed
+  espeak_amplitude: 170
+  espeak_pitch: 42         # lower pitch = less shrill
+  espeak_word_gap: 6       # small pauses between words = more human rhythm
+  espeak_soften: true      # ffmpeg filter to soften metallic frequencies
+
+paths:
+  generated: generated
+  output: output
