@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kannada Quiz Engine</title>
+<style>
+  :root { --bg:#1A1A40; --bg2:#2D2D6E; --accent:#FFC93C; --text:#fff; --sub:#C9C9E8; }
+  * { box-sizing:border-box; }
+  body { margin:0; font-family:system-ui,sans-serif; color:var(--text);
+         background:linear-gradient(180deg,var(--bg),var(--bg2)); min-height:100vh; }
+  .wrap { max-width:860px; margin:0 auto; padding:2rem 1rem 4rem; }
+  h1 { color:var(--accent); margin:0 0 .25rem; }
+  .sub { color:var(--sub); margin:0 0 2rem; }
+  fieldset { border:1px solid #4a4a8a; border-radius:10px; margin:0 0 1.5rem; padding:1rem 1.25rem; }
+  legend { color:var(--accent); font-weight:600; padding:0 .5rem; }
+  label { display:block; margin:.75rem 0 .25rem; color:var(--sub); font-size:.9rem; }
+  input, textarea { width:100%; padding:.55rem .7rem; border-radius:8px; border:1px solid #4a4a8a;
+                    background:#12122e; color:var(--text); font-size:1rem; }
+  textarea { min-height:3.2rem; resize:vertical; }
+  .q { border:1px dashed #5a5aa0; border-radius:10px; padding: .75rem 1rem 1rem; margin-bottom:1rem; position:relative; }
+  .q h3 { margin:.25rem 0 0; color:var(--accent); font-size:1rem; }
+  .q .del { position:absolute; top:.6rem; right:.75rem; background:none; border:none;
+            color:#FF5D5D; cursor:pointer; font-size:.85rem; }
+  .row { display:grid; grid-template-columns:1fr 1fr; gap:1rem; }
+  @media (max-width:640px){ .row{grid-template-columns:1fr;} }
+  button { cursor:pointer; border:none; border-radius:8px; font-size:1rem; padding:.7rem 1.4rem; }
+  .add { background:#3d3d80; color:var(--text); margin-bottom:1.5rem; }
+  .go  { background:var(--accent); color:#1A1A40; font-weight:700; }
+  .go:disabled { opacity:.5; cursor:wait; }
+  #log { background:#0d0d24; border-radius:8px; padding:1rem; font-family:monospace;
+         font-size:.85rem; white-space:pre-wrap; display:none; margin-top:1.5rem; color:var(--sub); }
+  #result { display:none; margin-top:1.5rem; }
+  #result a { color:var(--accent); font-weight:600; }
+  #result video { width:100%; border-radius:10px; margin-top:.75rem; }
+  .err { color:#FF5D5D; margin-top:1rem; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>ಕನ್ನಡ ಒಗಟು ಲೋಕ — Episode Builder</h1>
+  <p class="sub">Fill in the details, click Generate, and download a YouTube-ready quiz video.</p>
+
+  <fieldset>
+    <legend>Episode</legend>
+    <div class="row">
+      <div><label>Title (Kannada)</label><input id="title_kn" value="ಚಿತ್ರ ನೋಡಿ ಪದ ಹೇಳಿ!"></div>
+      <div><label>Title (English)</label><input id="title_en" value="Guess the Kannada Word!"></div>
+    </div>
+    <label>Intro narration (Kannada)</label>
+    <textarea id="intro_kn">ನಮಸ್ಕಾರ! ಕನ್ನಡ ಚಿತ್ರ ಒಗಟು ಆಟಕ್ಕೆ ಸ್ವಾಗತ. ಚಿತ್ರಗಳನ್ನು ಸೇರಿಸಿ ಪದವನ್ನು ಊಹಿಸಿ!</textarea>
+    <label>Outro narration (Kannada)</label>
+    <textarea id="outro_kn">ನೀವು ಎಷ್ಟು ಸರಿ ಉತ್ತರ ಹೇಳಿದಿರಿ? ಕಾಮೆಂಟ್ ಮಾಡಿ. ಲೈಕ್ ಮತ್ತು ಸಬ್ಸ್ಕ್ರೈಬ್ ಮಾಡಲು ಮರೆಯಬೇಡಿ!</textarea>
+  </fieldset>
+
+  <fieldset>
+    <legend>Questions</legend>
+    <div id="questions"></div>
+    <button type="button" class="add" onclick="addQuestion()">+ Add question</button>
+  </fieldset>
+
+  <button type="button" class="go" id="go" onclick="generate()">Generate video</button>
+  <div class="err" id="err"></div>
+  <div id="log"></div>
+  <div id="result">
+    <h2 style="color:var(--accent)">Done!</h2>
+    <p><a id="dl_video" download>⬇ Download video (MP4)</a> &nbsp;·&nbsp;
+       <a id="dl_thumb" download>⬇ Download thumbnail (PNG)</a></p>
+    <video id="preview" controls></video>
+  </div>
+</div>
+
+<script>
+let qCount = 0;
+
+function addQuestion(data = {}) {
+  qCount++;
+  const div = document.createElement("div");
+  div.className = "q";
+  div.innerHTML = `
+    <button type="button" class="del" onclick="this.parentNode.remove(); renumber()">✕ remove</button>
+    <h3>Question <span class="qnum">${qCount}</span></h3>
+    <div class="row">
+      <div><label>Clue emojis (space-separated)</label><input class="clue" value="${data.clue || ''}" placeholder="☀️ 🌸"></div>
+      <div><label>Answer (Kannada)</label><input class="akn" value="${data.akn || ''}" placeholder="ಸೂರ್ಯಕಾಂತಿ"></div>
+    </div>
+    <div class="row">
+      <div><label>Answer (English)</label><input class="aen" value="${data.aen || ''}" placeholder="Sunflower"></div>
+      <div><label>Question narration (Kannada)</label><input class="nkn" value="${data.nkn || ''}" placeholder="ಪ್ರಶ್ನೆ ಒಂದು. ಈ ಚಿತ್ರಗಳನ್ನು ಸೇರಿಸಿದರೆ ಯಾವ ಪದ?"></div>
+    </div>
+    <label>Reveal narration (Kannada)</label>
+    <input class="rkn" value="${data.rkn || ''}" placeholder="ಉತ್ತರ: ಸೂರ್ಯಕಾಂತಿ!">`;
+  document.getElementById("questions").appendChild(div);
+}
+
+function renumber() {
+  document.querySelectorAll("#questions .qnum").forEach((el, i) => el.textContent = i + 1);
+  qCount = document.querySelectorAll("#questions .q").length;
+}
+
+addQuestion({clue:"☀️ 🌸", akn:"ಸೂರ್ಯಕಾಂತಿ", aen:"Sunflower",
+             nkn:"ಪ್ರಶ್ನೆ ಒಂದು. ಈ ಎರಡು ಚಿತ್ರಗಳನ್ನು ಸೇರಿಸಿದರೆ ಯಾವ ಪದ?",
+             rkn:"ಉತ್ತರ: ಸೂರ್ಯಕಾಂತಿ!"});
+
+async function generate() {
+  const err = document.getElementById("err");
+  err.textContent = "";
+  const questions = [...document.querySelectorAll("#questions .q")].map(q => ({
+    clue_emojis: q.querySelector(".clue").value,
+    answer_kn:   q.querySelector(".akn").value,
+    answer_en:   q.querySelector(".aen").value,
+    narration_kn: q.querySelector(".nkn").value,
+    reveal_narration_kn: q.querySelector(".rkn").value,
+  }));
+  const body = {
+    title_kn: document.getElementById("title_kn").value,
+    title_en: document.getElementById("title_en").value,
+    intro_narration_kn: document.getElementById("intro_kn").value,
+    outro_narration_kn: document.getElementById("outro_kn").value,
+    questions,
+  };
+  const go = document.getElementById("go");
+  go.disabled = true; go.textContent = "Rendering…";
+  document.getElementById("result").style.display = "none";
+  const log = document.getElementById("log");
+  log.style.display = "block"; log.textContent = "Starting…";
+
+  try {
+    const res = await fetch("/generate", {method:"POST",
+      headers:{"Content-Type":"application/json"}, body: JSON.stringify(body)});
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || "Request failed");
+    await poll(data.episode_id);
+  } catch (e) {
+    err.textContent = e.message;
+  } finally {
+    go.disabled = false; go.textContent = "Generate video";
+  }
+}
+
+async function poll(id) {
+  const log = document.getElementById("log");
+  while (true) {
+    await new Promise(r => setTimeout(r, 2000));
+    const res = await fetch(`/status/${id}`);
+    const s = await res.json();
+    log.textContent = s.log.join("\n") || "Working…";
+    if (s.status === "done") {
+      log.style.display = "none";
+      document.getElementById("result").style.display = "block";
+      document.getElementById("dl_video").href = s.video;
+      document.getElementById("dl_thumb").href = s.thumbnail;
+      document.getElementById("preview").src = s.video;
+      return;
+    }
+    if (s.status === "error") throw new Error("Generation failed — see log above.");
+  }
+}
+</script>
+</body>
+</html>

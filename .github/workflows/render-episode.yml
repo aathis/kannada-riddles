@@ -1,0 +1,63 @@
+name: Render episode video
+
+on:
+  push:
+    branches: ["**"]
+    paths:
+      - "kannada-quiz-engine/episodes/*.json"
+  workflow_dispatch:
+    inputs:
+      episode:
+        description: "Episode file to render (e.g. episodes/episode_001.json)"
+        required: true
+        default: "episodes/episode_001.json"
+
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: kannada-quiz-engine
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install system dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ffmpeg espeak-ng fonts-noto-core fonts-noto-color-emoji
+
+      - name: Install Python dependencies
+        run: pip install -r requirements.txt
+
+      - name: Determine episodes to render
+        id: episodes
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo 'files=${{ github.event.inputs.episode }}' >> "$GITHUB_OUTPUT"
+          else
+            files=$(git diff --name-only HEAD^ HEAD -- 'kannada-quiz-engine/episodes/*.json' \
+                    | sed 's|^kannada-quiz-engine/||' | tr '\n' ' ')
+            echo "files=$files" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Render
+        run: |
+          for f in ${{ steps.episodes.outputs.files }}; do
+            python -m src.cli validate "$f"
+            python -m src.cli generate "$f"
+          done
+
+      - name: Upload video + thumbnail
+        uses: actions/upload-artifact@v4
+        with:
+          name: episode-output
+          path: |
+            kannada-quiz-engine/output/*.mp4
+            kannada-quiz-engine/output/*.png
+          retention-days: 14

@@ -5,3 +5,4 @@ typer>=0.12
 rich>=13.0
 pyyaml>=6.0
 edge-tts>=6.1  # natural Kannada voice (needs internet)
+flask>=3.0     # web UI (webapp/app.py)

@@ -34,6 +34,24 @@ tts:
 `edge-tts` is already in requirements.txt and needs internet. Voice options:
 `kn-IN-SapnaNeural` (female) or `kn-IN-GaganNeural` (male).
 
+## Web UI (no JSON editing needed)
+
+```bash
+python webapp/app.py
+```
+
+Open http://localhost:5000 — fill in the episode form (titles, narrations,
+add/remove questions), click **Generate video**, watch progress, then preview
+and download the MP4 + thumbnail from the page. Episode JSON files are saved
+to `episodes/` automatically.
+
+## Rendering on GitHub (no local machine needed)
+
+The workflow `.github/workflows/render-episode.yml` renders episodes on
+GitHub's servers: push a new/changed JSON file in `episodes/` (or run the
+workflow manually from the Actions tab, giving it an episode path) and
+download the finished video + thumbnail from the workflow run's artifacts.
+
 ## Creating new episodes
 
 Copy `episodes/episode_001.json`, change the questions, run generate.

@@ -1,0 +1,20 @@
+{
+  "id": "web_ui_test",
+  "title_kn": "ಪರೀಕ್ಷೆ",
+  "title_en": "Web UI Test",
+  "intro_narration_kn": "ನಮಸ್ಕಾರ!",
+  "outro_narration_kn": "ಧನ್ಯವಾದ!",
+  "questions": [
+    {
+      "id": 1,
+      "clue_emojis": [
+        "☀️",
+        "🌸"
+      ],
+      "answer_kn": "ಸೂರ್ಯಕಾಂತಿ",
+      "answer_en": "Sunflower",
+      "narration_kn": "ಪ್ರಶ್ನೆ ಒಂದು.",
+      "reveal_narration_kn": "ಉತ್ತರ: ಸೂರ್ಯಕಾಂತಿ!"
+    }
+  ]
+}
