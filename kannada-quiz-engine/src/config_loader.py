@@ -4,7 +4,9 @@ from __future__ import annotations
 from pathlib import Path
 
 import yaml
-from pydantic import BaseModel
+from pydantic import BaseModel, field_validator
+
+from .fonts import resolve_font
 
 
 class VideoCfg(BaseModel):
@@ -37,6 +39,11 @@ class FontsCfg(BaseModel):
     kannada_bold: str
     latin_bold: str
     emoji: str
+
+    @field_validator("*")
+    @classmethod
+    def _resolve(cls, v: str) -> str:
+        return resolve_font(v)
 
 
 class BrandingCfg(BaseModel):
